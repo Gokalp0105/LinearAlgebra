@@ -1,0 +1,6 @@
+﻿  LinearAlgebra.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 17 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  LinearAlgebra.vcxproj -> C:\Users\Gogap\source\repos\LinearAlgebra\x64\Release\LinearAlgebra.exe
