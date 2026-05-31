@@ -17,7 +17,7 @@ Currently supports:
 More features will be added continuously.
 
 ## Usage
-Run `/x64/Release/LinearAlgebra.exe`
+Run `/Release/LinearAlgebra.exe`
 
 To calculate with different vectors, modify the values in `main()`.
 Input features are not yet implemented.
