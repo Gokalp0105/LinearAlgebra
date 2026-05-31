@@ -2,37 +2,37 @@
 #include <cmath>
 
 // ============================================================
-// Vec: N-boyutlu vektör yapısı
-// Heap üzerinde dinamik bellek kullanır, boyut runtime'da belirlenir.
-// Strang - Linear Algebra çalışmalarına paralel geliştirilmektedir.
+// Vec: N-dimensional vector struct
+// Uses dynamic heap memory; dimension is determined at runtime.
+// Developed in parallel with Strang - Introduction to Linear Algebra.
 // ============================================================
 
 struct Vec
 {
 public:
-    int dim;      // Vektörün boyutu (kaç bileşen taşıdığı)
-    float* data;  // Bileşenleri tutan heap adresi
+    int dim;      // Number of components (dimensionality)
+    float* data;  // Heap pointer holding the components
 
-    // Sadece boyut verilerek oluşturma: bileşenler başlatılmaz
+    // Construct with dimension only: components are uninitialized
     Vec(int dime)
     {
         dim = dime;
         data = new float[dim];
     }
 
-    // Boyut ve hazır bir float dizisiyle oluşturma
+    // Construct with dimension and an existing float array
     Vec(int dime, float* dat)
     {
         dim = dime;
         data = dat;
     }
 
-    // Varsayılan constructor: boş vektör
+    // Default constructor: empty vector
     Vec() : dim(0), data(nullptr) {}
 
-    // Atama operatörü: dim ve data pointer'ı kopyalar
-    // NOT: shallow copy, iki Vec aynı belleği paylaşır.
-    // Destructor eklenince deep copy'e geçilmeli.
+    // Assignment operator: copies dim and data pointer (shallow copy).
+    // NOTE: both Vec objects share the same memory after assignment.
+    // Switch to deep copy once a destructor is added.
     Vec operator=(const Vec& other)
     {
         this->dim = other.dim;
@@ -40,9 +40,9 @@ public:
         return *this;
     }
 
-    // Dot product (iç çarpım): v * w = v1w1 + v2w2 + ... + vnwn
-    // Geometrik anlamı: iki vektörün ne kadar aynı yönde olduğunu ölçer.
-    // Dik vektörlerde 0, aynı yönde maksimum çıkar.
+    // Dot product: v * w = v1*w1 + v2*w2 + ... + vn*wn
+    // Geometric meaning: measures how aligned two vectors are.
+    // Returns 0 for perpendicular vectors, maximum for parallel ones.
     float operator*(const Vec& other)
     {
         float sum = 0;
@@ -53,10 +53,10 @@ public:
         return sum;
     }
 
-    // Vektör toplama: v + w
-    // Boyutlar eşitse bileşen bileşen toplanır.
-    // Boyutlar farklıysa küçük vektörün dışındaki bileşenler
-    // büyük vektörden aynen alınır.
+    // Vector addition: v + w
+    // If dimensions are equal, components are added pairwise.
+    // If dimensions differ, the extra components of the larger
+    // vector are carried over unchanged.
     Vec operator+(const Vec& other)
     {
         int smallestDim;
@@ -69,7 +69,7 @@ public:
         }
         else if (other.dim == dim)
         {
-            // Eşit boyut: direkt topla
+            // Equal dimensions: add component by component
             float* newData = new float[dim];
             for (int i = 0; i < dim; i++)
             {
@@ -84,7 +84,7 @@ public:
             biggestVec = *this;
         }
 
-        // Farklı boyut: ortak kısım toplanır, kalan büyük vektörden alınır
+        // Different dimensions: add shared part, copy remainder from larger vec
         float* newData = new float[biggestVec.dim];
         for (int i = 0; i < smallestDim; i++)
         {
@@ -98,8 +98,8 @@ public:
         return newVec;
     }
 
-    // Vektör uzunluğu (L2 norm): ||v|| = sqrt(v1^2 + v2^2 + ... + vn^2)
-    // Pisagor teoreminin N boyuta genellemesi.
+    // Vector length (L2 norm): ||v|| = sqrt(v1^2 + v2^2 + ... + vn^2)
+    // Generalization of the Pythagorean theorem to N dimensions.
     float length()
     {
         float sum = 0;
@@ -110,12 +110,12 @@ public:
         return sqrt(sum);
     }
 
-    // İki vektör arasındaki açının kosinüsü
-    // Formül: cos(theta) = (v . w) / (||v|| * ||w||)
-    // Sonuç -1 ile 1 arasında:
-    //   1  -> aynı yön (0 derece)
-    //   0  -> dik (90 derece)
-    //  -1  -> zıt yön (180 derece)
+    // Cosine of the angle between two vectors
+    // Formula: cos(theta) = (v . w) / (||v|| * ||w||)
+    // Range: -1 to 1
+    //   1  -> same direction (0 degrees)
+    //   0  -> perpendicular (90 degrees)
+    //  -1  -> opposite direction (180 degrees)
     float cos(Vec& other)
     {
         float dotprod = *this * other;
@@ -132,7 +132,7 @@ int main()
     Vec v1(2, arr);
     Vec v2(2, arr2);
 
-    // (1,2) ve (2,3) neredeyse aynı yönde, cos ~0.99 beklenir
+    // (1,2) and (2,3) point in nearly the same direction, expect cos ~0.99
     std::cout << "cos(v1, v2) = " << v1.cos(v2) << std::endl;
 
     return 0;
